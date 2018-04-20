@@ -2,6 +2,7 @@ package org.craftedsw.tripservicekata.trip;
 
 import org.craftedsw.tripservicekata.exception.UserNotLoggedInException;
 import org.craftedsw.tripservicekata.user.User;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -27,19 +28,26 @@ public class TripServiceTestShould {
     @Spy
     TripService tripService = new TripService();
 
+    private User user;
+    private User loggedInUser;
+
+    @Before
+    public void setUp() {
+        this.user = new User();
+        this.loggedInUser = new User();
+    }
+
+
     @Test(expected = UserNotLoggedInException.class)
     public void
     throws_exception_if_user_not_logged_in() {
 
-        User user = new User();
         tripService.getFriendsTrips(user, null);
     }
 
     @Test
     public void
     find_trips_when_user_is_friend_with_logged_in_user() {
-        User user = new User();
-        User loggedInUser = new User();
         user.addFriend(loggedInUser);
         List<Trip> expectedListOfTrips = new ArrayList<>();
         expectedListOfTrips.add(new Trip());
@@ -53,8 +61,6 @@ public class TripServiceTestShould {
     @Test
     public void
     not_find_trips_when_user_is_not_friend_with_logged_in_user() {
-        User user = new User();
-        User loggedInUser = new User();
         List<Trip> expectedListOfTrips = new ArrayList<>();
         expectedListOfTrips.add(new Trip());
         given(tripDAO.tripsBy(user)).willReturn(expectedListOfTrips);
